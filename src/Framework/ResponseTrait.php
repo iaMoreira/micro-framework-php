@@ -85,6 +85,14 @@ trait ResponseTrait
             ->respond();
     }
 
+    protected function responseNotFound()
+    {
+        return $this->setStatus('error')
+            ->setStatusCode(404)
+            ->setMessage('not found')
+            ->respond();
+    }
+
     public function responseWithArray($data): Response
     {
         return response()->setStatus($this->statusCode)->json([
@@ -109,9 +117,18 @@ trait ResponseTrait
     {
         return $this->setStatus('success')
             ->setStatusCode(204)
-            ->setMessage('API.deleted_successfully')
+            ->setMessage('deleted successfully')
             ->respond();
     }
+
+    protected function responseValidation(array $validatorResponse)
+    {
+        return $this->setStatus('error')
+            ->setStatusCode(400)
+            ->setMessage('validation error')
+            ->responseWithArray($validatorResponse);
+    }
+    
 
 
 
