@@ -7,6 +7,7 @@ try {
     session_start();
     $conn = \Framework\Database::getInstance('database');
     \Framework\AbstractRepository::setConnection($conn);
+    \Framework\QueryBuilder::setConnection($conn);
     include __DIR__."/routes/routes.php";
     
     

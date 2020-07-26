@@ -77,7 +77,7 @@ class QueryBuilder
             throw new \Exception("Parametros incorretos para query: tabela não informada");
         }
 
-        $sql = $this->select." FROM {$this->table} ".$this->built;
+        $sql = "select ".$this->select." FROM {$this->table} ".$this->built;
 
         $result = self::$connection->query($sql);
 

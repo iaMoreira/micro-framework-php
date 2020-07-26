@@ -45,10 +45,10 @@ class Validate
 
 		switch ($type) {
 			case 'max':
-				$result = !is_null($param) && strlen($value) <= $param;
+				$result = is_null($value) || (!is_null($param) && strlen($value) <= $param);
 				break;
 			case 'min':
-				$result =  !is_null($param) && strlen($value) >= $param;
+				$result = is_null($value) || (!is_null($param) && strlen($value) >= $param);
 				break;
 			case 'required':
 				$result =  !is_null($value);
@@ -59,6 +59,9 @@ class Validate
 			case 'email':
 				$result = !is_null($value) ? !!filter_var(filter_var($value, FILTER_SANITIZE_EMAIL), FILTER_VALIDATE_EMAIL) : true;
 				break;
+			case 'unique':
+				$result = $this->validateUniqueField($param, $value);
+			break;
 			default:
 				throw new \Exception("Tipo de validação não implementado");
 		}
@@ -67,6 +70,24 @@ class Validate
 			$this->details[$field][] = $message;
 		}
 		return $result;
+	}
+
+	protected function validateUniqueField($params, $value)
+	{
+		$options = explode(",", $params);
+		$query = new QueryBuilder($options[0]);
+
+		if(count($options) > 2){
+			$conditionals = "$options[1] = '$value' AND $options[2] != $options[3]";
+		}else {
+			$conditionals = "$options[1] = '$value'";
+		}
+		
+		$elements = $query->where($conditionals)->get();
+		if(count($elements) > 0){
+			return  false;
+		}
+		return true;
 	}
 
 	protected function message($field, $type, $param = null)
@@ -82,6 +103,8 @@ class Validate
 				return "The field {$field} supports only numeric values.";
 			case 'email':
 				return "The field {$field} is invalid.";
+			case 'unique':
+				return "The field {$field} is already being used.";
 		}
 	}
 }
