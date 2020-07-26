@@ -49,7 +49,7 @@ abstract class AbstractService implements IAbstractService
     {
         $model = $this->repository->find($id);
         if (\is_null($model)) {
-            throw new \Exception('API.' . $this->getClassName() . '_not_found', 404);
+            throw new \Exception($this->getClassName() . ' not found', 404);
         }
 
         return $model;
@@ -154,8 +154,7 @@ abstract class AbstractService implements IAbstractService
      */
     protected function getClassName(): string
     {
-        $array = explode('\\', get_class($this->repository));
+        $array = explode('\\', get_class($this->repository->getModel()));
         return strtolower(end($array));
     }
-
 }

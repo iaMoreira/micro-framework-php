@@ -18,7 +18,7 @@ abstract class AbstractRepository
         $newContent = array();
         foreach ($content as $key => $value) {
             if (is_scalar($value)) {
-                $newContent[$key] = $value; 
+                $newContent[$key] = $value;
             }
         }
         return $newContent;
@@ -57,12 +57,12 @@ abstract class AbstractRepository
             $db = self::$connection->prepare($sql);
             $db->execute($newContent);
             // if ($db->rowCount()) {
-                $newContent = $model ? array_merge($model->toArray(), $newContent) : $newContent;
-                $modelClass = get_class($this->model);
-                $model = $model ?? new $modelClass;
-                $newContent[$this->model->id()] = $model->id ?? self::$connection->lastInsertId();
-                $model->fromArray($newContent);
-                return  $model;
+            $newContent = $model ? array_merge($model->toArray(), $newContent) : $newContent;
+            $modelClass = get_class($this->model);
+            $model = $model ?? new $modelClass;
+            $newContent[$this->model->id()] = $model->id ?? self::$connection->lastInsertId();
+            $model->fromArray($newContent);
+            return  $model;
             // } else {}
         } else {
             throw new \Exception("Não há conexão com Banco de dados!");
@@ -87,7 +87,7 @@ abstract class AbstractRepository
         return $obj;
     }
 
-    public function _find($parameter)
+    public function _find($parameter): ?AbstractModel
     {
         $sql = 'SELECT * FROM ' . $this->model->table();
         $sql .= ' WHERE ' . $this->model->id();
@@ -97,11 +97,10 @@ abstract class AbstractRepository
             $result = self::$connection->query($sql);
 
             if ($result) {
-
                 $newObject = $result->fetchObject(get_class($this->model));
+                return $newObject ? $newObject : null;
             }
-
-            return $newObject;
+            return null;
         } else {
             throw new \Exception("Não há conexão com Banco de dados!");
         }
@@ -245,5 +244,10 @@ abstract class AbstractRepository
     public static function table()
     {
         return (new static)->model::table();
+    }
+
+    public function getModel(): AbstractModel
+    {
+        return $this->model;
     }
 }
