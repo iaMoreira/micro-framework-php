@@ -74,7 +74,7 @@ abstract class AbstractController
         }
 
         // Validation
-        $validatorResponse = $this->validateRequest();
+        $validatorResponse = $this->validateRequest($id);
 
         // Send failed response if validation fails and return array of errors
         if (!empty($validatorResponse)) {

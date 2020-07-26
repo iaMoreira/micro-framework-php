@@ -20,9 +20,11 @@ class User extends AbstractModel
 
         if(is_null($id)){
             $rules['name'] .= '|required';
-            $rules['email'] .= '|required';
+            $rules['email'] .= '|required|unique:users,email';
             $rules['password'] .= '|required';
-        }
+        } else {
+            $rules['email'] .= "|unique:users,email,id,$id";
+        }   
 
         return  $rules; 
     }
