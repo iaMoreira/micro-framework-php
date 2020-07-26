@@ -35,6 +35,14 @@ abstract class AbstractController
             return $this->responseEmpty();
         }
 
+        // Validation
+        $validatorResponse = $this->validateRequest();
+
+        // Send failed response if validation fails and return array of errors
+        if (!empty($validatorResponse)) {
+            return $this->responseValidation($validatorResponse);
+        }
+
         Database::beginTransaction();
         try {
             $model = $this->service->store($data);
@@ -48,7 +56,11 @@ abstract class AbstractController
 
     public function show(int $id): Response
     {
-        $model = $this->service->findOneOrFail($id);
+        $model = $this->service->findOne($id);
+        if(is_null($model)){
+            return $this->responseNotFound();
+        }
+
         return $this->respondWithObject($model);
     }
 
@@ -59,6 +71,14 @@ abstract class AbstractController
         // Send failed response if empty request
         if (empty($data)) {
             return $this->responseEmpty();
+        }
+
+        // Validation
+        $validatorResponse = $this->validateRequest();
+
+        // Send failed response if validation fails and return array of errors
+        if (!empty($validatorResponse)) {
+            return $this->responseValidation($validatorResponse);
         }
 
         Database::beginTransaction();
@@ -82,5 +102,12 @@ abstract class AbstractController
             Database::rollback();
             throw new Exception($ex);
         }
+    }
+
+    protected function validateRequest(int $id = null)
+    {
+        $validator = request()->validate($this->service->getRules($id));
+
+        return $validator->fails();
     }
 }

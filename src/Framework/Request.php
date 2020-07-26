@@ -45,7 +45,6 @@ class Request
         $this->request[$key] = $value;
     }
 
-
     public function base()
     {
         return $this->base;
@@ -88,7 +87,7 @@ class Request
 
     public function fails()
     {
-        return !$this->validate;
+        return $this->validate;
     }
 
     public function all()
@@ -99,7 +98,7 @@ class Request
                 return (array) json_decode(file_get_contents('php://input'));
             case 'get':
                 return (array) $_GET;
-            case 'put': 
+            case 'put':
                 $_PUT = json_decode(file_get_contents('php://input'));
                 return (array) $_PUT;
             default:
