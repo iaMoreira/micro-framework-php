@@ -49,3 +49,8 @@ function validate()
 {
     return new Validate;
 }
+
+function bcrypt(string $value): string
+{
+    return password_hash($value, PASSWORD_BCRYPT);
+}
