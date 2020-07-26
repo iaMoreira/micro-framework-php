@@ -6,6 +6,8 @@ use Exception;
 
 abstract class AbstractController
 {
+    use ResponseTrait;
+
     /**
      * Instance that 
      *
@@ -30,55 +32,64 @@ abstract class AbstractController
     public function index(): Response
     {
         $models = $this->service->findAll();
-        return response()->json($models)->send();
+        return $this->responseWithArray($models);
     }
 
     public function store(): Response
     {
         $data = $this->request->all();
-        // TODO validation empty
+        
+        // Send failed response if empty request
+        if (empty($data)) {
+            return $this->responseEmpty();
+        }
 
         Database::beginTransaction();
         try {
             $model = $this->service->store($data);
             Database::commit();
-            return response()->setStatus(201)->json($model)->send();
+            return $this->setStatusCode(201)->respondWithObject($model);
         } catch (\Exception $ex) {
             Database::rollback();
-            throw new Exception("store error", $ex);
+            throw new Exception($ex);
         }
     }
 
     public function show(int $id): Response
     {
         $model = $this->service->findOneOrFail($id);
-        return response()->json($model)->send();
+        return $this->respondWithObject($model);
     }
 
     public function update(int $id): Response
     {
         $data = $this->request->all();
+        
+        // Send failed response if empty request
+        if (empty($data)) {
+            return $this->responseEmpty();
+        }
 
         Database::beginTransaction();
         try {
             $model = $this->service->update($id, $data);
             Database::commit();
-            return response()->json($model)->send();
+            return $this->respondWithObject($model);
         } catch (\Exception $ex) {
             Database::rollback();
-            throw new Exception("update error", $ex);
-        }
+            throw new Exception($ex);        }
     }
 
     public function destroy(int $id): Response
     {
+        Database::beginTransaction();
         try {
             $this->service->delete($id);
-            return response()->setStatus(204)->send();
             Database::commit();
+            return $this->responseDeleted();
         } catch (\Exception $ex) {
             Database::rollback();
-            throw new Exception("delete error", $ex);
+            throw new Exception($ex);
         }
     }
 }

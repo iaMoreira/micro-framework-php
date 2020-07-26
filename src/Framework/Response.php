@@ -311,7 +311,7 @@ class Response
         return $this->redirect($_SERVER['HTTP_REFERER']);
     }
 
-    public function json($data)
+    public function json($data, int $options = 0)
     {
         $this->setContentType('json');
         if (is_object($data) && method_exists($data, 'toArray')){
@@ -320,8 +320,8 @@ class Response
         else if (!is_array($data)) {
             $data = (array) $data;
         }
-        $this->setContent(json_encode($data));
-        return $this;
+        $this->setContent(json_encode($data, $options));
+        return $this->send();
     }
 
 }
