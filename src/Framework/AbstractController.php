@@ -11,13 +11,6 @@ abstract class AbstractController
     /**
      * Instance that 
      *
-     * @var Request $request
-     */
-    protected  $request;
-
-    /**
-     * Instance that 
-     *
      * @var AbstractService $service
      */
     protected  $service;
@@ -25,9 +18,7 @@ abstract class AbstractController
     public function __construct(AbstractService $service = null)
     {
         $this->service = $service;
-        $this->request = request();
     }
-
 
     public function index(): Response
     {
@@ -37,7 +28,7 @@ abstract class AbstractController
 
     public function store(): Response
     {
-        $data = $this->request->all();
+        $data = request()->all();
         
         // Send failed response if empty request
         if (empty($data)) {
@@ -49,7 +40,7 @@ abstract class AbstractController
             $model = $this->service->store($data);
             Database::commit();
             return $this->setStatusCode(201)->respondWithObject($model);
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             Database::rollback();
             throw new Exception($ex);
         }
@@ -63,7 +54,7 @@ abstract class AbstractController
 
     public function update(int $id): Response
     {
-        $data = $this->request->all();
+        $data = request()->all();
         
         // Send failed response if empty request
         if (empty($data)) {
@@ -75,7 +66,7 @@ abstract class AbstractController
             $model = $this->service->update($id, $data);
             Database::commit();
             return $this->respondWithObject($model);
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             Database::rollback();
             throw new Exception($ex);        }
     }
@@ -87,7 +78,7 @@ abstract class AbstractController
             $this->service->delete($id);
             Database::commit();
             return $this->responseDeleted();
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             Database::rollback();
             throw new Exception($ex);
         }
