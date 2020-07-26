@@ -106,4 +106,10 @@ abstract class AbstractModel
     {
         return (new static)->idField;
     }
+
+    public static function getRules(int $id = null): array
+    {
+        return [];
+    }
+
 }

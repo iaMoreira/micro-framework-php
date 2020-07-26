@@ -157,4 +157,15 @@ abstract class AbstractService implements IAbstractService
         $array = explode('\\', get_class($this->repository->getModel()));
         return strtolower(end($array));
     }
+
+    /**
+     * get rules of resource
+     *
+     * @return string
+     */
+    public function getRules(int $id = null): array
+    {
+        return $this->repository->getModel()->getRules($id);
+    }
+
 }
