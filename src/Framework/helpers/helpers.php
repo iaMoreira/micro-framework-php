@@ -1,30 +1,10 @@
 <?php
 
-use \Framework\View;
 use \Framework\Router;
 use \Framework\Request;
 use Framework\Response;
-use Framework\Flash;
 use Framework\Validate;
 
-/**
- * ==============================================================================================================
- *
- * Helpers: funções auxiliares para construção de aplicativos
- *
- * ----------------------------------------------------
- *
- * @author Alexandre Bezerra Barbosa <alxbbarbosa@yahoo.com.br>
- * @copyright (c) 2018, Alexandre Bezerra Barbosa
- * @version 1.00
- * ==============================================================================================================
- */
-function view($view_file, $data = [])
-{
-    // $view = new View();
-
-    return $view->render($view_file, $data);
-}
 
 function request($key = null)
 {
@@ -65,17 +45,7 @@ function response($content = '', $status = 200, $headers = [], $charset = 'UTF-8
     return new Response($content, $status, $headers, $charset);
 }
 
-function session()
-{
-    // return new Flash;
-}
-
 function validate()
 {
-    // return new Validate;
-}
-
-function old($field)
-{
-    return session()->getOld($field);
+    return new Validate;
 }
