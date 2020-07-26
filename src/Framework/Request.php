@@ -95,9 +95,15 @@ class Request
     {
         switch (strtolower($this->method)) {
             case 'post':
-                return (array) $_POST;
+                // return (array) $_POST;
+                return (array) json_decode(file_get_contents('php://input'));
             case 'get':
                 return (array) $_GET;
+            case 'put': 
+                $_PUT = json_decode(file_get_contents('php://input'));
+                return (array) $_PUT;
+            default:
+                return json_decode(file_get_contents('php://input'));
         }
     }
 

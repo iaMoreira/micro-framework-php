@@ -5,7 +5,7 @@ ini_set('display_errors', true);
 try {
     require __DIR__."/vendor/autoload.php";
     session_start();
-    $conn = \Framework\Connection::getInstance('database');
+    $conn = \Framework\Database::getInstance('database');
     \Framework\AbstractRepository::setConnection($conn);
     include __DIR__."/routes/routes.php";
     

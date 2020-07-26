@@ -35,7 +35,7 @@ abstract class AbstractService implements IAbstractService
      */
     public function findOne(int $id): ?AbstractModel
     {
-        return $this->repository->where('id', $id)->first();
+        return $this->repository->find($id);
     }
 
     /**
@@ -47,7 +47,7 @@ abstract class AbstractService implements IAbstractService
      */
     public function findOneOrFail(int $id): AbstractModel
     {
-        $model = $this->repository->where('id', $id)->first();
+        $model = $this->repository->find($id);
         if (\is_null($model)) {
             throw new \Exception('API.' . $this->getClassName() . '_not_found', 404);
         }
@@ -63,7 +63,7 @@ abstract class AbstractService implements IAbstractService
      */
     public function findOneBy(array $criteria): ?AbstractModel
     {
-        return $this->repository->where($criteria)->first();
+        return $this->repository->where($criteria);
     }
 
     /**
@@ -130,7 +130,7 @@ abstract class AbstractService implements IAbstractService
             }
         }
 
-        // $this->repository->save($model);
+        $model = $this->repository->save($data, $model);
         return $model;
     }
 

@@ -18,51 +18,52 @@ abstract class AbstractRepository
         $newContent = array();
         foreach ($content as $key => $value) {
             if (is_scalar($value)) {
-                $newContent[$key] = $value; //$this->format($value);
+                $newContent[$key] = $value; 
             }
         }
         return $newContent;
     }
 
-    public function save(array $content, $model = null)
+    public function save(array $content, AbstractModel $model = null)
     {
         $newContent = $this->convertContent($content);
 
         if (isset($model)) {
 
-            $sets = array_filter(array_map(function($field) {
-                    if ($field === $this->model->idField || $field == 'created_at' || $field == 'updated_at') {
-                        return;
-                    }
-                    return "{$field} = :{$field}";
-                }, array_keys($newContent)));
+            $sets = array_filter(array_map(function ($field) {
+                if ($field === $this->model->id() || $field == 'created_at' || $field == 'updated_at') {
+                    return;
+                }
+                return "{$field} = :{$field}";
+            }, array_keys($newContent)));
 
             if ($this->model->logTimestamp === TRUE) {
                 $sets[]       = 'updated_at = :updated_at';
-                $newContent[] = "updated_at = '".date('Y-m-d H:i:s')."'";
+                $newContent[] = "updated_at = '" . date('Y-m-d H:i:s') . "'";
             }
-
-            $sql = "UPDATE {$this->model->table()} SET ".implode(', ', $sets)." WHERE {$this->model->idField} = :{$this->model->idField};";
+            $newContent = array_merge([$this->model->id() => $model->id], $newContent);
+            $sql = "UPDATE {$this->model->table()} SET " . implode(', ', $sets) . " WHERE {$this->model->id()} = :{$this->model->id()};";
         } else {
             if ($this->model->logTimestamp === TRUE) {
-                $newContent['created_at'] = "'".date('Y-m-d H:i:s')."'";
-                $newContent['updated_at'] = "'".date('Y-m-d H:i:s')."'";
+                $newContent['created_at'] = "'" . date('Y-m-d H:i:s') . "'";
+                $newContent['updated_at'] = "'" . date('Y-m-d H:i:s') . "'";
             }
-            $sql = "INSERT INTO {$this->model->table()} (".implode(', ', array_keys($newContent)).') VALUES (:'.implode(', :',
-                    array_keys($newContent)).');';
+            $sql = "INSERT INTO {$this->model->table()} (" . implode(', ', array_keys($newContent)) . ') VALUES (:' . implode(
+                ', :',
+                array_keys($newContent)
+            ) . ');';
         }
         if (self::$connection) {
             $db = self::$connection->prepare($sql);
             $db->execute($newContent);
-            if($db->rowCount()){
+            // if ($db->rowCount()) {
+                $newContent = $model ? array_merge($model->toArray(), $newContent) : $newContent;
                 $modelClass = get_class($this->model);
-                $model = new $modelClass;
-                $newContent[$model->id()] = self::$connection->lastInsertId();
+                $model = $model ?? new $modelClass;
+                $newContent[$this->model->id()] = $model->id ?? self::$connection->lastInsertId();
                 $model->fromArray($newContent);
                 return  $model;
-            }else {
-
-            }
+            // } else {}
         } else {
             throw new \Exception("Não há conexão com Banco de dados!");
         }
@@ -86,10 +87,10 @@ abstract class AbstractRepository
         return $obj;
     }
 
-    public static function _find($parameter)
+    public function _find($parameter)
     {
-        $sql = 'SELECT * FROM '.self::table();
-        $sql .= ' WHERE '.self::id();
+        $sql = 'SELECT * FROM ' . $this->model->table();
+        $sql .= ' WHERE ' . $this->model->id();
         $sql .= " = {$parameter} ;";
 
         if (self::$connection) {
@@ -97,7 +98,7 @@ abstract class AbstractRepository
 
             if ($result) {
 
-                $newObject = $result->fetchObject(get_called_class());
+                $newObject = $result->fetchObject(get_class($this->model));
             }
 
             return $newObject;
@@ -106,11 +107,11 @@ abstract class AbstractRepository
         }
     }
 
-    public function delete()
+    public function delete(AbstractModel $model)
     {
-        if (isset($this->content[$this->idField])) {
+        if (isset($model->id)) {
 
-            $sql = "DELETE FROM {$this->table} WHERE {$this->idField} = {$this->content[$this->idField]};";
+            $sql = "DELETE FROM {$this->model->table()} WHERE {$this->model->id()} = {$model->id};";
 
             if (self::$connection) {
                 return self::$connection->exec($sql);
@@ -123,7 +124,7 @@ abstract class AbstractRepository
     public function all(string $filter = '', int $limit = 0, int $offset = 0)
     {
 
-        $sql = 'SELECT * FROM '.$this->model::table();
+        $sql = 'SELECT * FROM ' . $this->model::table();
         $sql .= ($filter !== '') ? " WHERE {$filter}" : "";
         $sql .= ($limit > 0) ? " LIMIT {$limit}" : "";
         $sql .= ($offset > 0) ? " OFFSET {$offset}" : "";
@@ -139,7 +140,7 @@ abstract class AbstractRepository
 
     public static function count(string $fieldName = '*', string $filter = '')
     {
-        $sql = "SELECT count($fieldName) as t FROM ".self::table();
+        $sql = "SELECT count($fieldName) as t FROM " . self::table();
         $sql .= ($filter !== '') ? " WHERE {$filter}" : "";
         $sql .= ';';
         if (self::$connection) {

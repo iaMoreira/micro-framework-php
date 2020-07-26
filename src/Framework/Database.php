@@ -2,7 +2,7 @@
 
 namespace Framework;
 
-class Connection
+class Database
 {
     private static $connection;
 
@@ -93,5 +93,20 @@ class Connection
             self::$connection->exec("set names utf8");
         }
         return self::$connection;
+    }
+
+    public static function beginTransaction(): bool
+    {
+        return self::$connection->beginTransaction();
+    }
+
+    public static function commit(): bool
+    {
+        return self::$connection->commit();
+    }
+
+    public static function rollback(): bool
+    {
+        return self::$connection->rollback();
     }
 }

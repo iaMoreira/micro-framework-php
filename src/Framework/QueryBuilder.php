@@ -59,7 +59,7 @@ class QueryBuilder
             $this->select = 'SELECT count('.implode(',', $arguments).') ';
         }
 
-        if (func_num_args > 1) {
+        if (func_num_args() > 1) {
             $fields       = func_get_args();
             $this->select = 'SELECT count('.implode(',', $fields).') ';
         }
