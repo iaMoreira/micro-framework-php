@@ -7,7 +7,7 @@ abstract class AbstractModel
     private $content;
     protected $table;
     protected $idField;
-    protected $logTimestamp;
+    public $logTimestamp;
     protected $query;
     protected $fillable;
     

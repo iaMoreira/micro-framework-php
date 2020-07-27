@@ -44,9 +44,9 @@ abstract class AbstractRepository
             $newContent = array_merge([$this->model->id() => $model->id], $newContent);
             $sql = "UPDATE {$this->model->table()} SET " . implode(', ', $sets) . " WHERE {$this->model->id()} = :{$this->model->id()};";
         } else {
-            if ($this->model->logTimestamp === TRUE) {
-                $newContent['created_at'] = "'" . date('Y-m-d H:i:s') . "'";
-                $newContent['updated_at'] = "'" . date('Y-m-d H:i:s') . "'";
+            if ($this->model->logTimestamp == TRUE) {
+                $newContent['created_at'] = date('Y-m-d H:i:s');
+                $newContent['updated_at'] = date('Y-m-d H:i:s');
             }
             $sql = "INSERT INTO {$this->model->table()} (" . implode(', ', array_keys($newContent)) . ') VALUES (:' . implode(
                 ', :',

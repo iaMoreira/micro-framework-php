@@ -7,7 +7,7 @@ use Framework\AbstractModel;
 class Drink extends AbstractModel
 {
     protected $fillable = ['drink_ml', 'user_id'];
-    protected $logTimestamp = TRUE;
+    public $logTimestamp = TRUE;
     protected $table = 'drinks';
 
     public static function getRules(int $id = null): array
