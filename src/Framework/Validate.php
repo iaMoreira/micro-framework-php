@@ -54,7 +54,7 @@ class Validate
 				$result =  !is_null($value);
 				break;
 			case 'numeric':
-				$result =  preg_match("/^[0-9]{1,}$/", $value);
+				$result = (bool) preg_match("/^[0-9]{1,}$/", $value);
 				break;
 			case 'email':
 				$result = !is_null($value) ? !!filter_var(filter_var($value, FILTER_SANITIZE_EMAIL), FILTER_VALIDATE_EMAIL) : true;
