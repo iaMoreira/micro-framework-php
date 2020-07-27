@@ -97,7 +97,7 @@ abstract class AbstractService implements IAbstractService
      */
     public function store(array $data): AbstractModel
     {
-        $filledProperties = $this->model->getFillable();
+        $filledProperties = $this->repository->getModel()->getFillable();
         $keys = array_keys($data);
 
         foreach ($keys as $key) {
@@ -122,7 +122,7 @@ abstract class AbstractService implements IAbstractService
     {
         $model = $this->findOneOrFail($id);
 
-        $filledProperties = $this->model->getFillable();
+        $filledProperties = $this->repository->getModel()->getFillable();
         $keys = array_keys($data);
         foreach ($keys as $key) {
             if (in_array($key, $filledProperties)) {
