@@ -3,7 +3,6 @@
 namespace Framework;
 
 use Framework\File;
-use Framework\Validate;
 
 class Request
 {
@@ -15,6 +14,7 @@ class Request
     protected $base;
     protected $method;
     protected $files;
+    protected $headers;
 
     public function __construct()
     {
@@ -26,7 +26,7 @@ class Request
         $uri = explode('/', filter_var(trim($_SERVER['REQUEST_URI'], '/'), FILTER_SANITIZE_URL));
         $this->uri = implode('/', array_diff($uri, $script));
         $this->method = $_SERVER['REQUEST_METHOD'];
-
+        $this->headers = getallheaders();
         if (count($_FILES) > 0) {
             $this->setFiles();
         }
@@ -176,5 +176,10 @@ class Request
     public function __get($key)
     {
         return $this->get($key);
+    }
+
+    public function getHeader(string $key): string
+    {
+        return $this->headers[$key];
     }
 }
