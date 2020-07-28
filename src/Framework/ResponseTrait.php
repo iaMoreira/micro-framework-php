@@ -105,6 +105,9 @@ trait ResponseTrait
 
     protected function respondWithObject(AbstractModel $item, $callbackResource = null): Response
     {
+        if(!is_null($callbackResource)) {
+            $item = new $callbackResource($item);
+        }
         return response()->setStatus($this->statusCode)->json([
             'status'    => $this->status,
             'code'      => $this->statusCode,
