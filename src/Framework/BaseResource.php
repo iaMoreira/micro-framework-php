@@ -28,7 +28,7 @@ class BaseResource
      *
      * @return array
      */
-    public function toArray(): ?array
+    public function toArray(): array
     {
         if (is_null($this->resource)) {
             return [];

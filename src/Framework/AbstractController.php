@@ -18,7 +18,7 @@ abstract class AbstractController
     /**
      * Instance that 
      *
-     * @var AbstractResource $resource
+     * @var BaseResource $resource
      */
     protected  $resource;
 
@@ -32,7 +32,7 @@ abstract class AbstractController
     public function index(): Response
     {
         $models = $this->service->findAll();
-        return $this->responseWithArray($models);
+        return $this->respondWithCollection($models, $this->resource);
     }
 
     public function store(): Response

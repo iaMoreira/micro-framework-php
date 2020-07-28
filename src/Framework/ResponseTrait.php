@@ -111,7 +111,7 @@ trait ResponseTrait
         return response()->setStatus($this->statusCode)->json([
             'status'    => $this->status,
             'code'      => $this->statusCode,
-            'data'      => $item->toArray(), // TODO implements callback
+            'data'      => $item->toArray(),
             'message'   => $this->message
         ], JSON_NUMERIC_CHECK);
     }
@@ -131,8 +131,13 @@ trait ResponseTrait
             ->setMessage('validation error')
             ->responseWithArray($validatorResponse);
     }
-    
 
-
-
+    protected function respondWithCollection($collection, $callback, int $code = 200)
+    {
+        return response()->json([
+            'status'        => 'success',
+            'code'          => $code,
+            'data'          => $callback::collection($collection)
+        ], $this->statusCode, []);
+    }
 }

@@ -131,7 +131,7 @@ abstract class AbstractRepository
 
         if (self::$connection) {
             $result = self::$connection->query($sql);
-            return $result->fetchAll(\PDO::FETCH_CLASS, get_called_class());
+            return $result->fetchAll(\PDO::FETCH_CLASS, get_class($this->model));
         } else {
             throw new \Exception("Não há conexão com Banco de dados!");
         }
