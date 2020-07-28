@@ -15,9 +15,18 @@ abstract class AbstractController
      */
     protected  $service;
 
+    /**
+     * Instance that 
+     *
+     * @var AbstractResource $resource
+     */
+    protected  $resource;
+
     public function __construct(AbstractService $service = null)
     {
         $this->service = $service;
+        $this->resource = new BaseResource();
+
     }
 
     public function index(): Response
@@ -47,7 +56,7 @@ abstract class AbstractController
         try {
             $model = $this->service->store($data);
             Database::commit();
-            return $this->setStatusCode(201)->respondWithObject($model);
+            return $this->setStatusCode(201)->respondWithObject($model, $this->resource);
         } catch (Exception $ex) {
             Database::rollback();
             throw new Exception($ex);
@@ -61,7 +70,7 @@ abstract class AbstractController
             return $this->responseNotFound();
         }
 
-        return $this->respondWithObject($model);
+        return $this->respondWithObject($model, $this->resource);
     }
 
     public function update(int $id): Response
@@ -85,7 +94,7 @@ abstract class AbstractController
         try {
             $model = $this->service->update($id, $data);
             Database::commit();
-            return $this->respondWithObject($model);
+            return $this->respondWithObject($model, $this->resource);
         } catch (Exception $ex) {
             Database::rollback();
             throw new Exception($ex);        }
