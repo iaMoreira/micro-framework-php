@@ -20,6 +20,7 @@ class BaseResource
     public function __construct($resource = null)
     {
         $this->resource = $resource;
+        return $this;
     }
 
     /**
@@ -27,7 +28,7 @@ class BaseResource
      *
      * @return array
      */
-    public function toArray(): array
+    public function toArray(): ?array
     {
         if (is_null($this->resource)) {
             return [];
@@ -36,6 +37,16 @@ class BaseResource
         return is_array($this->resource)
             ? $this->resource
             : $this->resource->toArray();
+    }
+
+
+    public static function collection(array $items): array
+    {
+        return array_map(function ($item) {
+            $obj = get_called_class();
+            $obj = new $obj($item);
+            return $obj->toArray();
+        }, $items);
     }
 
     /**
