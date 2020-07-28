@@ -69,11 +69,11 @@ abstract class AbstractRepository
         }
     }
 
-    public function _where($arguments)
+    public function where($arguments)
     {
 
         QueryBuilder::setConnection(self::$connection);
-        $obj  = new QueryBuilder($this->table);
+        $obj  = new QueryBuilder($this->table());
         $data = func_get_args();
         return call_user_func_array(array($obj, 'where'), $data);
     }

@@ -11,4 +11,9 @@ class DrinkRepository extends AbstractRepository
     {
         $this->model = new Drink();
     }
+
+    public function findAllByUserId(int $userId): array
+    {
+        return $this->where('user_id', $userId)->get();
+    }
 }
