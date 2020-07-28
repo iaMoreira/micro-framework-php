@@ -137,7 +137,7 @@ abstract class AbstractRepository
         }
     }
 
-    public static function count(string $fieldName = '*', string $filter = '')
+    public static function count(string $fieldName = '*', string $filter = ''): int
     {
         $sql = "SELECT count($fieldName) as t FROM " . self::table();
         $sql .= ($filter !== '') ? " WHERE {$filter}" : "";

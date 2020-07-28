@@ -16,4 +16,9 @@ class DrinkRepository extends AbstractRepository
     {
         return $this->where('user_id', $userId)->get();
     }
+
+    public function countByUserId(int $userId): int
+    {
+        return $this->count('*', "user_id = $userId");
+    }
 }

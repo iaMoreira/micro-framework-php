@@ -28,7 +28,7 @@ class UserResource extends BaseResource
             "id" => $this->id,
             "name" => $this->name,
             "email" => $this->email,
-            "drink_counter" => $this->drinkRepository->findAllByUserId($this->id)
+            "drink_counter" => $this->drinkRepository->countByUserId($this->id)
         ];
     }
 }
