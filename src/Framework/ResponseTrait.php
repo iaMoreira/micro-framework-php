@@ -105,7 +105,7 @@ trait ResponseTrait
 
     protected function respondWithObject(AbstractModel $item, $callbackResource = null): Response
     {
-        if(!is_null($callbackResource)) {
+        if (!is_null($callbackResource)) {
             $item = new $callbackResource($item);
         }
         return response()->setStatus($this->statusCode)->json([
@@ -139,5 +139,19 @@ trait ResponseTrait
             'code'          => $code,
             'data'          => $callback::collection($collection)
         ], $this->statusCode, []);
+    }
+
+    public function responseWithToken($data)
+    {
+        $token = $data['token'];
+        // unset($data['token']); // TODO remove token inside response data 
+        $json = [
+            'status' => 'success',
+            'code' => 200,
+            'data' => $data,
+            'message' => null,
+        ];
+
+        return response()->setHeader('Authorization', 'Bearer ' . $token)->json($json);
     }
 }
