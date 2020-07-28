@@ -180,6 +180,9 @@ class Request
 
     public function getHeader(string $key): string
     {
-        return $this->headers[$key];
+        if (isset($this->headers[$key])) {
+            return $this->headers[$key];
+        }
+        return false;
     }
 }

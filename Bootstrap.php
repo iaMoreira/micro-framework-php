@@ -6,10 +6,9 @@ try {
     require __DIR__."/vendor/autoload.php";
     session_start();
     $conn = \Framework\Database::getInstance('database');
-    \Framework\AbstractRepository::setConnection($conn);
     \Framework\QueryBuilder::setConnection($conn);
+    \Framework\AbstractRepository::setConnection($conn);
     include __DIR__."/routes/routes.php";
-    
     
 } catch (\Exception $e) {
     echo $e->getMessage();

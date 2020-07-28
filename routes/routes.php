@@ -3,16 +3,22 @@
 use Phroute\Phroute\RouteCollector;
 use Phroute\Phroute\Dispatcher;
 
-$collector = new RouteCollector();
+$router = new RouteCollector();
 
-$collector->get('api/public/users',  ['App\Controllers\UserController', 'index']);
-$collector->post('api/public/users',  ['App\Controllers\UserController', 'store']);
-$collector->get('api/public/users/{id}',  ['App\Controllers\UserController', 'show']);
-$collector->put('api/public/users/{id}',  ['App\Controllers\UserController', 'update']);
-$collector->delete('api/public/users/{id}',  ['App\Controllers\UserController', 'destroy']);
-$collector->post('api/public/users/{userId}/drink',  ['App\Controllers\DrinkController', 'customStore']);
+$router->post('api/public/login',  ['App\Controllers\LoginController', 'login']);
+$router->post('api/public/users',  ['App\Controllers\UserController', 'store']);
 
-$collector->post('api/public/login',  ['App\Controllers\LoginController', 'login']);
+$router->filter('auth', ['App\Middleware\Authenticate', 'handle']);
 
-$dispatcher = new Dispatcher($collector->getData());
+$router->group(['before' => 'auth'], function ($router) {
+
+    $router->get('api/public/users',  ['App\Controllers\UserController', 'index']);
+    $router->get('api/public/users/{id}',  ['App\Controllers\UserController', 'show']);
+    $router->put('api/public/users/{id}',  ['App\Controllers\UserController', 'update']);
+    $router->delete('api/public/users/{id}',  ['App\Controllers\UserController', 'destroy']);
+    $router->post('api/public/users/{userId}/drink',  ['App\Controllers\DrinkController', 'customStore']);
+});
+
+
+$dispatcher = new Dispatcher($router->getData());
 $response = $dispatcher->dispatch($_SERVER['REQUEST_METHOD'], parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));

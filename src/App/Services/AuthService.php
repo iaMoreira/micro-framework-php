@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\User;
 use App\Repositories\UserRepository;
+use App\Resources\UserResource;
 use Exception;
 use Firebase\JWT\JWT;
 
@@ -29,21 +30,23 @@ class AuthService
             "data" => $user->toArray()
         );
 
+        $resource = new UserResource($user);
         // generate jwt
         $token = JWT::encode($base, self::$key);
-        $data['user'] = $user->toArray();
+        $data['user'] = $resource->toArray();
         $data['expires_in'] = 1233;
         $data['token'] = $token;
         $data['token_type'] = 'bearer';
         return $data;
     }
 
-    public static function user(): User
+    public static function user(): ?User
     {
         $authorization = request()->getHeader('Authorization');
         $sepators = explode(' ', $authorization);
         if (count($sepators) < 2) {
-            throw new Exception('token not send', 400);
+            return null;
+            // throw new Exception('token not send', 400);
         }
 
         $token = $sepators[1];
@@ -52,11 +55,12 @@ class AuthService
             // decode jwt
             $decoded = JWT::decode($token, self::$key, array('HS256'));
             $user = new User();
-            $user->fromArray($decoded->data);
+            $user->fromArray(array($decoded->data));
             return $user;
         } // if decode fails, it means jwt is invalid
         catch (Exception $e) {
-            throw new Exception('access denied', 401, $e);
+            return null;
+            // throw new Exception('access denied', 401, $e);
         }
     }
 
