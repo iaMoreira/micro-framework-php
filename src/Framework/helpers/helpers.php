@@ -6,7 +6,7 @@ use Framework\Response;
 use Framework\Validate;
 
 
-function request($key = null)
+function request($key = null): Request
 {
     $request = new Request();
 

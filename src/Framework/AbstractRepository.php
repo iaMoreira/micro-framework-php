@@ -69,7 +69,7 @@ abstract class AbstractRepository
         }
     }
 
-    public function where($arguments)
+    public function where($arguments): QueryBuilder
     {
 
         QueryBuilder::setConnection(self::$connection);

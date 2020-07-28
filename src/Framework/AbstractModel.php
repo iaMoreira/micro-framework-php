@@ -10,7 +10,7 @@ abstract class AbstractModel
     public $logTimestamp;
     protected $query;
     protected $fillable;
-    
+    protected $hidden = [];
 
     public function __construct()
     {
@@ -61,7 +61,7 @@ abstract class AbstractModel
 
     public function toArray()
     {
-        return $this->content;
+        return array_diff_key($this->content, array_flip($this->hidden));
     }
 
     public function fromArray(array $array)
@@ -111,5 +111,4 @@ abstract class AbstractModel
     {
         return [];
     }
-
 }

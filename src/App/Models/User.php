@@ -9,6 +9,7 @@ class User extends AbstractModel
     protected $fillable = ['name', 'email', 'password'];
     public $logTimestamp = FALSE;
     protected $table = 'users';
+    protected $hidden = ['password'];
 
     public static function getRules(int $id = null): array
     {

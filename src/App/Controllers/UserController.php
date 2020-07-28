@@ -13,5 +13,5 @@ class UserController extends AbstractController
     {
         parent::__construct(new UserService());
         $this->resource = new UserResource();
-    } 
+    }
 }
