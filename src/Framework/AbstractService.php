@@ -61,9 +61,9 @@ abstract class AbstractService implements IAbstractService
      * @param array $criteria
      * @return AbstractModel|null
      */
-    public function findOneBy(array $criteria): ?AbstractModel
+    public function findOneBy(array $criteria)
     {
-        return $this->repository->where($criteria);
+        return $this->repository->where($criteria)->get();
     }
 
     /**

@@ -55,7 +55,7 @@ class AuthService
             // decode jwt
             $decoded = JWT::decode($token, self::$key, array('HS256'));
             $user = new User();
-            $user->fromArray(array($decoded->data));
+            $user->fromArray((array) $decoded->data);
             return $user;
         } // if decode fails, it means jwt is invalid
         catch (Exception $e) {

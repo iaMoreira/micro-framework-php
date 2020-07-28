@@ -27,7 +27,7 @@ interface IAbstractService
      * @param array $criteria
      * @return AbstractModel|null
      */
-    public function findOneBy(array $criteria): ?AbstractModel;
+    public function findOneBy(array $criteria);
 
     /**
      * Search All resources by criteria
