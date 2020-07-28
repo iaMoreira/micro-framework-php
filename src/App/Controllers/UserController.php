@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Resources\UserResource;
 use App\Services\UserService;
 use Framework\AbstractController;
 
@@ -10,7 +11,7 @@ class UserController extends AbstractController
 
     public function __construct()
     {
-        $this->service = new UserService();
-        $this->request = request();
-    }
+        parent::__construct(new UserService());
+        $this->resource = new UserResource();
+    } 
 }
