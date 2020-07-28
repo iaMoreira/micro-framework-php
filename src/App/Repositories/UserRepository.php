@@ -12,4 +12,14 @@ class UserRepository extends AbstractRepository implements IUserRepository
     {
         $this->model = new User();  
     }
+
+    public function findByEmail(string $email): ?User
+    {
+        $users = $this->all("email = '$email'", 1);
+        if(count($users) > 0){
+            return $users[0];
+        }else {
+            return null;
+        }
+    }
 }
