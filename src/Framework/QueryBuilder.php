@@ -32,11 +32,11 @@ class QueryBuilder
             $data = (array) $data;
         }
 
-        $sets = array_filter(array_map(function($field) {
-                return "{$field} = :{$field}";
-            }, array_keys($data)));
+        $sets = array_filter(array_map(function ($field) {
+            return "{$field} = :{$field}";
+        }, array_keys($data)));
 
-        $sql = "UPDATE {$this->table} SET ".implode(', ', $sets).$this->built.';';
+        $sql = "UPDATE {$this->table} SET " . implode(', ', $sets) . $this->built . ';';
 
         $db = self::$connection->prepare($sql);
         $db->execute($data);
@@ -45,7 +45,7 @@ class QueryBuilder
 
     public function delete()
     {
-        $sql = "DELETE FROM {$this->table} ".$this->built;
+        $sql = "DELETE FROM {$this->table} " . $this->built;
         return self::$connection->exec($sql);
     }
 
@@ -56,14 +56,14 @@ class QueryBuilder
         }
 
         if (func_num_args() == 1 && is_array($arguments)) {
-            $this->select = 'SELECT count('.implode(',', $arguments).') ';
+            $this->select = 'SELECT count(' . implode(',', $arguments) . ') ';
         }
 
         if (func_num_args() > 1) {
             $fields       = func_get_args();
-            $this->select = 'SELECT count('.implode(',', $fields).') ';
+            $this->select = 'SELECT count(' . implode(',', $fields) . ') ';
         }
-        $sql = $this->select." FROM {$this->table} ".$this->built;
+        $sql = $this->select . " FROM {$this->table} " . $this->built;
 
         $q = self::$connection->prepare($sql);
         $q->execute();
@@ -77,7 +77,7 @@ class QueryBuilder
             throw new \Exception("Parametros incorretos para query: tabela não informada");
         }
 
-        $sql = "select ".$this->select." FROM {$this->table} ".$this->built;
+        $sql = "select " . $this->select . " FROM {$this->table} " . $this->built;
 
         $result = self::$connection->query($sql);
 
@@ -96,13 +96,13 @@ class QueryBuilder
         }
 
         if (func_num_args() == 1 && is_array($arguments)) {
-            $this->select = 'SELECT '.implode(',', $arguments).' ';
+            $this->select = 'SELECT ' . implode(',', $arguments) . ' ';
             return $this;
         }
 
         if (func_num_args() > 1) {
             $fields       = func_get_args();
-            $this->select = 'SELECT '.implode(',', $fields).' ';
+            $this->select = 'SELECT ' . implode(',', $fields) . ' ';
             return $this;
         }
     }
@@ -139,7 +139,7 @@ class QueryBuilder
         return $this;
     }
 
-    public function where($arguments)
+    public function where($arguments): QueryBuilder
     {
 
         if (func_num_args() == 1 && is_string($arguments)) {
@@ -221,7 +221,7 @@ class QueryBuilder
         if (is_callable($data)) {
             $result .= $this->subQuery($data);
         } else if (is_array($data)) {
-            $result .= '('.implode(',', $data).')';
+            $result .= '(' . implode(',', $data) . ')';
         }
         $this->built .= $result;
         return $this;
@@ -239,7 +239,7 @@ class QueryBuilder
         if (is_callable($data)) {
             $result .= $this->subQuery($data);
         } else if (is_array($data)) {
-            $result .= '('.implode(',', $data).')';
+            $result .= '(' . implode(',', $data) . ')';
         }
         $this->built .= $result;
         return $this;
