@@ -12,6 +12,16 @@ class DrinkService extends AbstractService
     {
         $this->repository = new DrinkRepository();
     }
+    public function rankingToday()
+    {
+        $today = date('Y-m-d');
+        return $this->repository->rankingByDay($today);
+    }
+
+    public function index(int $userId): array
+    {
+        return $this->repository->findAllByUserId($userId);
+    }
 
     public function customStore(array $data, int $userId): AbstractModel
     {
