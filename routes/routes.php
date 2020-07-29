@@ -13,13 +13,15 @@ $router->filter('owner', ['App\Middleware\ResourceOwner', 'handle']);
 
 $router->group(['before' => 'auth'], function ($router) {
 
+    $router->get('api/public/drinks/ranking',  ['App\Controllers\DrinkController', 'rankingToday']);
     $router->get('api/public/users',  ['App\Controllers\UserController', 'index']);
     $router->get('api/public/users/{id}',  ['App\Controllers\UserController', 'show']);
+    $router->get('api/public/users/{userId}/drink',  ['App\Controllers\DrinkController', 'index']);    
     
     $router->group(['before' => 'owner'], function ($router) {
         $router->put('api/public/users/{id}',  ['App\Controllers\UserController', 'update']);
         $router->delete('api/public/users/{id}',  ['App\Controllers\UserController', 'destroy']);
-        $router->post('api/public/users/{userId}/drink',  ['App\Controllers\DrinkController', 'customStore']);    
+        $router->post('api/public/users/{userId}/drink',  ['App\Controllers\DrinkController', 'store']);    
     });
 });
 
