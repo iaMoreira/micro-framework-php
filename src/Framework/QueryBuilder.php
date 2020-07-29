@@ -11,7 +11,7 @@ class QueryBuilder
 
     public function __construct($table = '')
     {
-        $this->select = "*";
+        $this->select = "select *";
         $this->table  = $table;
     }
 
@@ -77,11 +77,11 @@ class QueryBuilder
             throw new \Exception("Parametros incorretos para query: tabela não informada");
         }
 
-        $sql = "select " . $this->select . " FROM {$this->table} " . $this->built;
+        $sql = $this->select . " FROM {$this->table} " . $this->built;
 
         $result = self::$connection->query($sql);
 
-        if ($this->select == '*') {
+        if ($this->select == 'select *') {
             return $result->fetchAll(\PDO::FETCH_CLASS, get_called_class());
         } else {
             return $result->fetchAll(\PDO::FETCH_CLASS);
@@ -298,5 +298,11 @@ class QueryBuilder
     public static function setConnection(\PDO $connection)
     {
         self::$connection = $connection;
+    }
+
+    public function setBuilt(string $built)
+    {
+        $this->built = $built;
+        return $this;
     }
 }

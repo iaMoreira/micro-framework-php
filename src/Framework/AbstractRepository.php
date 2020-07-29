@@ -71,8 +71,6 @@ abstract class AbstractRepository
 
     public function where($arguments): QueryBuilder
     {
-
-        QueryBuilder::setConnection(self::$connection);
         $obj  = new QueryBuilder($this->table());
         $data = func_get_args();
         return call_user_func_array(array($obj, 'where'), $data);
@@ -249,5 +247,11 @@ abstract class AbstractRepository
     public function getModel(): AbstractModel
     {
         return $this->model;
+    }
+
+    public function query(): QueryBuilder
+    {
+        $query = new QueryBuilder(self::table());
+        return $query;
     }
 }
