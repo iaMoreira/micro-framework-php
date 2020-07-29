@@ -21,4 +21,12 @@ class UserService extends AbstractService implements IUserService
         $data['password'] = bcrypt($data['password']);
         return parent::store($data);
     }
+
+    public function update(int $id, array $data): AbstractModel
+    {
+        if (isset($data['password'])) {
+            $data['password'] = bcrypt($data['password']);
+        }
+        return parent::update($id, $data);
+    }
 }
