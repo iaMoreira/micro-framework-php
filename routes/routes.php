@@ -1,17 +1,15 @@
 <?php
 
 use Phroute\Phroute\RouteCollector;
-use Phroute\Phroute\Dispatcher;
 
 
 $router = new RouteCollector();
 $router->filter('auth', ['App\Middleware\Authenticate', 'handle']);
 $router->filter('owner', ['App\Middleware\ResourceOwner', 'handle']);
 
-$router->group(['prefix' => request()->base()], function ($router) use ($loginController) {
-    $router->post('login',  [$loginController, 'login']);
+$router->group(['prefix' => request()->base()], function ($router) {
+    $router->post('login',  ['App\Controllers\LoginController', 'login']);
     $router->post('users',  ['App\Controllers\UserController', 'store']);
-
 
     $router->group(['before' => 'auth', 'prefix' => 'users'], function ($router) {
 
@@ -28,6 +26,5 @@ $router->group(['prefix' => request()->base()], function ($router) use ($loginCo
     });
 });
 
-
-$dispatcher = new Dispatcher($router->getData());
-$response = $dispatcher->dispatch($_SERVER['REQUEST_METHOD'], parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
+$resolver = new App\Providers\RouterResolverProvider($container);
+$response = (new Phroute\Phroute\Dispatcher($router->getData(), $resolver))->dispatch($_SERVER['REQUEST_METHOD'], parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));

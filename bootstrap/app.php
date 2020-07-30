@@ -14,7 +14,6 @@ try {
     $builder = new DI\ContainerBuilder();
     $builder->addDefinitions(__DIR__ . '/container.php');
     $container = $builder->build();
-    $loginController = $container->get('\App\Controllers\LoginController');
 
     include __DIR__."/../routes/routes.php";
     
