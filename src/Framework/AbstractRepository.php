@@ -2,7 +2,7 @@
 
 namespace Framework;
 
-abstract class AbstractRepository
+abstract class AbstractRepository implements IAbstractRepository
 {
     private static $connection;
 
@@ -13,21 +13,8 @@ abstract class AbstractRepository
      */
     protected $model;
 
-    private function convertContent(array $content)
+    public function save(array $content, AbstractModel $model = null): AbstractModel
     {
-        $newContent = array();
-        foreach ($content as $key => $value) {
-            if (is_scalar($value)) {
-                $newContent[$key] = $value;
-            }
-        }
-        return $newContent;
-    }
-
-    public function save(array $content, AbstractModel $model = null)
-    {
-        $newContent = $this->convertContent($content);
-
         if (isset($model)) {
 
             $sets = array_filter(array_map(function ($field) {
@@ -35,37 +22,37 @@ abstract class AbstractRepository
                     return;
                 }
                 return "{$field} = :{$field}";
-            }, array_keys($newContent)));
+            }, array_keys($content)));
 
             if ($this->model->logTimestamp === TRUE) {
                 $sets[]       = 'updated_at = :updated_at';
-                $newContent[] = "updated_at = '" . date('Y-m-d H:i:s') . "'";
+                $content[] = "updated_at = '" . date('Y-m-d H:i:s') . "'";
             }
-            $newContent = array_merge([$this->model->id() => $model->id], $newContent);
+            $content = array_merge([$this->model->id() => $model->id], $content);
             $sql = "UPDATE {$this->model->table()} SET " . implode(', ', $sets) . " WHERE {$this->model->id()} = :{$this->model->id()};";
         } else {
             if ($this->model->logTimestamp == TRUE) {
-                $newContent['created_at'] = date('Y-m-d H:i:s');
-                $newContent['updated_at'] = date('Y-m-d H:i:s');
+                $content['created_at'] = date('Y-m-d H:i:s');
+                $content['updated_at'] = date('Y-m-d H:i:s');
             }
-            $sql = "INSERT INTO {$this->model->table()} (" . implode(', ', array_keys($newContent)) . ') VALUES (:' . implode(
+            $sql = "INSERT INTO {$this->model->table()} (" . implode(', ', array_keys($content)) . ') VALUES (:' . implode(
                 ', :',
-                array_keys($newContent)
+                array_keys($content)
             ) . ');';
         }
         if (self::$connection) {
             $db = self::$connection->prepare($sql);
-            $db->execute($newContent);
+            $db->execute($content);
             // if ($db->rowCount()) {
-            $newContent = $model ? array_merge($model->toArray(), $newContent) : $newContent;
+            $content = $model ? array_merge($model->toArray(), $content) : $content;
             $modelClass = get_class($this->model);
             $model = $model ?? new $modelClass;
-            $newContent[$this->model->id()] = $model->id ?? self::$connection->lastInsertId();
-            $model->fromArray($newContent);
+            $content[$this->model->id()] = $model->id ?? self::$connection->lastInsertId();
+            $model->fromArray($content);
             return  $model;
             // } else {}
         } else {
-            throw new \Exception("Não há conexão com Banco de dados!");
+            throw new \Exception("there is no database connection.");
         }
     }
 
@@ -76,16 +63,14 @@ abstract class AbstractRepository
         return call_user_func_array(array($obj, 'where'), $data);
     }
 
-    public function _whereIn($field, $arguments)
+    public function whereIn($field, $arguments): QueryBuilder
     {
-
-        QueryBuilder::setConnection(self::$connection);
         $obj = new QueryBuilder($this->table);
         $obj->whereIn($field, $arguments);
         return $obj;
     }
 
-    public function _find($parameter): ?AbstractModel
+    public function find($parameter): ?AbstractModel
     {
         $sql = 'SELECT * FROM ' . $this->model->table();
         $sql .= ' WHERE ' . $this->model->id();
@@ -100,7 +85,7 @@ abstract class AbstractRepository
             }
             return null;
         } else {
-            throw new \Exception("Não há conexão com Banco de dados!");
+            throw new \Exception("there is no database connection.");
         }
     }
 
@@ -113,12 +98,12 @@ abstract class AbstractRepository
             if (self::$connection) {
                 return self::$connection->exec($sql);
             } else {
-                throw new \Exception("Não há conexão com Banco de dados!");
+                throw new \Exception("there is no database connection.");
             }
         }
     }
 
-    public function all(string $filter = '', int $limit = 0, int $offset = 0)
+    public function all(string $filter = '', int $limit = 0, int $offset = 0): array
     {
 
         $sql = 'SELECT * FROM ' . $this->model::table();
@@ -131,11 +116,11 @@ abstract class AbstractRepository
             $result = self::$connection->query($sql);
             return $result->fetchAll(\PDO::FETCH_CLASS, get_class($this->model));
         } else {
-            throw new \Exception("Não há conexão com Banco de dados!");
+            throw new \Exception("there is no database connection.");
         }
     }
 
-    public static function count(string $fieldName = '*', string $filter = ''): int
+    public function count(string $fieldName = '*', string $filter = ''): int
     {
         $sql = "SELECT count($fieldName) as t FROM " . self::table();
         $sql .= ($filter !== '') ? " WHERE {$filter}" : "";
@@ -146,13 +131,13 @@ abstract class AbstractRepository
             $a = $q->fetch(\PDO::FETCH_ASSOC);
             return (int) $a['t'];
         } else {
-            throw new \Exception("Não há conexão com Banco de dados!");
+            throw new \Exception("there is no database connection.");
         }
     }
 
-    public static function findFisrt(string $filter = '')
+    public function findFisrt(string $filter = '')
     {
-        return self::all($filter, 1);
+        return $this->all($filter, 1)[1];
     }
 
     public static function setConnection(\PDO $connection)
@@ -160,88 +145,9 @@ abstract class AbstractRepository
         self::$connection = $connection;
     }
 
-    public function __call($name, $arguments)
+    public function table(): string
     {
-
-        if ($name === 'where') {
-            $obj = get_class();
-            $obj = new $obj;
-            return call_user_func_array(array($obj, '_where'), $arguments);
-        }
-
-        if ($name === 'whereIn') {
-            $obj = get_class();
-            $obj = new $obj;
-            return call_user_func_array(array($obj, '_whereIn'), $arguments);
-        }
-
-        if ($name === 'destroy') {
-            $obj = get_class();
-            return $obj::find($arguments[0])->delete();
-        }
-
-        if ($name === 'find') {
-            $obj = get_class();
-            return $obj::_find($arguments[0]);
-        }
-
-        if ($name === 'create') {
-
-            $data = $arguments[0];
-            if (!is_array($data)) {
-                $data = (array) $data;
-                unset($data[self::id()]);
-            }
-            $obj = get_class();
-            $obj = new $obj;
-            $obj->fromArray($data);
-            $obj->save();
-            return $obj;
-        }
-    }
-
-    public static function __callStatic($name, $arguments)
-    {
-
-        if ($name === 'where') {
-
-            $obj = new static;
-            return call_user_func_array(array($obj, '_where'), $arguments);
-        }
-
-        if ($name === 'whereIn') {
-
-            $obj = new static;
-            return call_user_func_array(array($obj, '_whereIn'), $arguments);
-        }
-
-        if ($name === 'destroy') {
-
-            return self::find($arguments[0])->delete();
-        }
-
-        if ($name === 'find') {
-
-            return self::_find($arguments[0]);
-        }
-
-        if ($name === 'save') {
-
-            $data = $arguments[0];
-            if (!is_array($data)) {
-                $data = (array) $data;
-                unset($data[self::id()]);
-            }
-            // $obj = new static;
-            // $obj->fromArray($data);
-            $obj->save($data);
-            return $obj;
-        }
-    }
-
-    public static function table()
-    {
-        return (new static)->model::table();
+        return $this->model->table();
     }
 
     public function getModel(): AbstractModel
