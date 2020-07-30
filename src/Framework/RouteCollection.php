@@ -21,7 +21,7 @@ class RouteCollection
     {
 
         if (!in_array($method, ['get', 'post'])) {
-            throw new \Exception("Metodo não impementado");
+            throw new \Exception("Method not implemented", 405);
         }
 
         $pattern = implode('/', array_filter(explode('/', $pattern)));

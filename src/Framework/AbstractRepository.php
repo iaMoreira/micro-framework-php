@@ -52,7 +52,7 @@ abstract class AbstractRepository implements IAbstractRepository
             return  $model;
             // } else {}
         } else {
-            throw new \Exception("there is no database connection.");
+            throw new \Exception("there is no database connection.", 400);
         }
     }
 
@@ -85,7 +85,7 @@ abstract class AbstractRepository implements IAbstractRepository
             }
             return null;
         } else {
-            throw new \Exception("there is no database connection.");
+            throw new \Exception("there is no database connection.", 400);
         }
     }
 
@@ -98,7 +98,7 @@ abstract class AbstractRepository implements IAbstractRepository
             if (self::$connection) {
                 return self::$connection->exec($sql);
             } else {
-                throw new \Exception("there is no database connection.");
+                throw new \Exception("there is no database connection.", 400);
             }
         }
     }
@@ -116,7 +116,7 @@ abstract class AbstractRepository implements IAbstractRepository
             $result = self::$connection->query($sql);
             return $result->fetchAll(\PDO::FETCH_CLASS, get_class($this->model));
         } else {
-            throw new \Exception("there is no database connection.");
+            throw new \Exception("there is no database connection.", 400);
         }
     }
 
@@ -131,7 +131,7 @@ abstract class AbstractRepository implements IAbstractRepository
             $a = $q->fetch(\PDO::FETCH_ASSOC);
             return (int) $a['t'];
         } else {
-            throw new \Exception("there is no database connection.");
+            throw new \Exception("there is no database connection.", 400);
         }
     }
 

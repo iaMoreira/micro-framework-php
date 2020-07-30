@@ -20,7 +20,7 @@ class Router
             if (array_key_exists('route', $pattern) && array_key_exists('as', $pattern)) {
                 $this->add('post', $pattern['route'], $callback, $pattern['as']);
             } else {
-                throw new \Exception("Declaração de rota está incorreta");
+                throw new \Exception("Route statement is incorrect");
             }
         } else {
             $this->add('post', $pattern, $callback, null);
@@ -34,7 +34,7 @@ class Router
             if (array_key_exists('route', $pattern) && array_key_exists('as', $pattern)) {
                 $this->add('get', $pattern['route'], $callback, $pattern['as']);
             } else {
-                throw new \Exception("Declaração de rota está incorreta");
+                throw new \Exception("Route statement is incorrect");
             }
         } else {
             $this->add('get', $pattern, $callback, null);

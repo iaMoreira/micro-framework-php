@@ -19,7 +19,7 @@ class AuthService implements IAuthService
             throw new Exception("email not found", 400);
         }
 
-        if (password_verify($password, $user->password)) {
+        if (!password_verify($password, $user->password)) {
             throw new Exception("password not matching", 400);
         }
 

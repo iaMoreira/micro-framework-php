@@ -24,7 +24,7 @@ class Database
         if (file_exists($file)) {
             $data = parse_ini_file($file);
         } else {
-            throw new \Exception('Error: database configuration file not found');
+            throw new \Exception('Error: database configuration file not found', 404);
         }
         return $data;
     }
@@ -63,7 +63,7 @@ class Database
                     break;
             }
         } else {
-            throw new \Exception('Error: date dbname type not reported');
+            throw new \Exception('Error: date dbname type not reported', 400);
         }
     }
 

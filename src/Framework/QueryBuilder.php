@@ -74,7 +74,7 @@ class QueryBuilder
     public function get(): array
     {
         if (is_null($this->table)) {
-            throw new \Exception("Parametros incorretos para query: tabela não informada");
+            throw new \Exception("Incorrect parameters for query: table not informed", 400);
         }
 
         $sql = $this->select . " FROM {$this->table} " . $this->built;
@@ -282,7 +282,7 @@ class QueryBuilder
                 } elseif ($num == 3) {
                     return " WHERE $data[0] $data[1] '$data[2]' ";
                 } else {
-                    throw new \Exception("Parametros incorretos para query");
+                    throw new \Exception("Incorrect parameters for query: table not informed", 400);
                 }
             }
         }

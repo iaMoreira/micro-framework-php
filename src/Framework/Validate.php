@@ -63,7 +63,7 @@ class Validate
 				$result = $this->validateUniqueField($param, $value);
 				break;
 			default:
-				throw new \Exception("Tipo de validação não implementado");
+				throw new \Exception("Validation type not implemented", 400);
 		}
 		if ($result !== true) {
 			$message = $this->message($field, $type, $param);

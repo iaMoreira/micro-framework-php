@@ -18,6 +18,7 @@ try {
     include __DIR__."/../routes/routes.php";
     
 } catch (\Exception $e) {
-    echo $e->getMessage();
+    // echo $e->getMessage(); // TODO handle error exceptions
+   responseException($e);
 }
 
