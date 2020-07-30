@@ -5,10 +5,11 @@ namespace App\Services;
 use App\Models\User;
 use App\Repositories\UserRepository;
 use App\Resources\UserResource;
+use App\Services\Contracts\IAuthService;
 use Exception;
 use Firebase\JWT\JWT;
 
-class AuthService
+class AuthService implements IAuthService
 {
     private static $key = "secret_key";
 
@@ -64,7 +65,7 @@ class AuthService
         }
     }
 
-    private static function emailExists(string $email)
+    private static function emailExists(string $email): ?User
     {
         $repository = new UserRepository();
         return $repository->findByEmail($email);
