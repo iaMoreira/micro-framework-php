@@ -4,13 +4,14 @@ namespace App\Controllers;
 
 use App\Services\DrinkService;
 use Exception;
-use Framework\AbstractController;
 use Framework\Database;
+use Framework\Response;
 use Framework\ResponseTrait;
+use Framework\ValidationRequestTrait;
 
 class DrinkController
 {
-    use ResponseTrait;
+    use ResponseTrait, ValidationRequestTrait;
 
 
     /**
@@ -25,13 +26,13 @@ class DrinkController
         $this->service = new DrinkService();
     }
 
-    public function index(int $userId)
+    public function index(int $userId): Response
     {
         $models = $this->service->index($userId);
         return $this->responseWithArray($models);
     }
 
-    public function store(int $userId)
+    public function store(int $userId): Response
     {
         $data = request()->all();
 
@@ -56,16 +57,9 @@ class DrinkController
         }
     }
 
-    public function rankingToday()
+    public function rankingToday(): Response
     {
         $models = $this->service->rankingToday();
         return $this->responseWithArray($models);
-    }
-
-    private function validateRequest(int $id = null)
-    {
-        $validator = request()->validate($this->service->getRules($id));
-
-        return $validator->fails();
     }
 }

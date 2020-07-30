@@ -26,7 +26,6 @@ abstract class AbstractController
     {
         $this->service = $service;
         $this->resource = new BaseResource();
-
     }
 
     public function index(): Response
