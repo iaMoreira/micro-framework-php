@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Services\AuthService;
+use App\Services\Contracts\IAuthService;
 use Exception;
 use Framework\Response;
 use Framework\ResponseTrait;
@@ -15,13 +16,13 @@ class LoginController
     /**
      * Instance that 
      *
-     * @var AuthService $service
+     * @var IAuthService $service
      */
     private $service;
 
-    public function __construct()
+    public function __construct(IAuthService $service)
     {
-        $this->service = new AuthService;
+        $this->service = $service;
     }
 
     public function login(): Response
