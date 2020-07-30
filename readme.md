@@ -31,7 +31,7 @@ Instale as dependências:
 
 `composer install`
 
-Copie o arquivo de exemplo de configuração `config/database.example.ini` para `config/database.ini` e edite o que for necessário para conectar ao banco de dados:  
+Copie o arquivo de exemplo de configuração `config/database.example.ini` para `config/database.ini` e preeencha todas as informações necessárias para conectar ao banco de dados:  
 
 `cp config/database.example.ini config/database.ini`
 
@@ -54,11 +54,11 @@ CREATE TABLE `drinks` (
   `user_id` int NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  CONSTRAINT `user_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+  FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ```
 
-Por último, para testar a api configure o __Postmam__ com a coleção `postman/Api.postman_collection.json` e as variáveis de ambiente `postman/api.postman_environment.json`.
+Por último, para testar a api configure o __Postmam__ com a coleção `postman/Api.postman_collection.json` e as variáveis de ambiente `postman/api.postman_environment.json`. A aplicação pode ser acessada a partir do arquivo `public/index.php`, para servidores com Apache é necessário acessar apenas por `http://{host}/public` ou configurar o VirtualHost direto para dentro dedo diretório `/public`.
 
 
 ### Lista de possíveis rotas para teste:
@@ -73,4 +73,24 @@ Operação            |       |  Entrada              | Saída | Header  | Middl
 **/users/:id**      | DELETE|                       |                                   | token* | auth owner | apagar o usuário corrente | 
 **/users/:id/drink**| POST  | drink_ml              | user_id email name drink_counter  | token* | auth owner | incrementar o contador de quantas vezes bebeu água |
 **/users/:id/drink**| GET   |                       | (array de drinks)                 | token* | auth | listar todas vezes que o usuário beberam até o momento |
-**/drinks/ranking** | GET   |                       | (array de usuários)               | token* | auth | obter a ranking do dia |
+**/users/drinks/ranking** | GET   |                 | (array de usuários com total de mls)| token* | auth | obter a ranking do dia |
+
+
+## Considerações Finais
+Esta aplicação PHP é baseado no modelo MVCS com adicionais de _Repository Pattern_ e _Template Method_. O código foi implementado utilizando principios do SOLID e as boas práticas de POO no PHP. O framework implementado teve inspiração com outros como Laravel e Spring Boot, por preferencia do autor. Apesar do app contemplar os requisitos propostos pelo desafio, 
+ainda há itens que podem ser agregados para melhorias e consistência do mesmo, para que em outro momento possa derivar outros apps dessa mesma base do projeto. Esses itens são: TDD, Migrations, tratamento de exceções desconhecidas, adição de outros Patterns entre outros.
+
+### Implementações Atuais
+  - MVCS (Model View Controller Service)
+  - Repository Pattern
+  - Template Method
+  - DI (Dependency Injection)
+  - JWT (Json Web Token)
+  - Middlewares
+  - JsonResource
+  - Handle Transaction
+
+### Implementações Futuras
+  - TDD
+  - Migrations
+  - Handle Exceptions
