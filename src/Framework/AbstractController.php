@@ -6,7 +6,7 @@ use Exception;
 
 abstract class AbstractController
 {
-    use ResponseTrait;
+    use ResponseTrait, ValidationRequestTrait;
 
     /**
      * Instance that 
@@ -37,7 +37,7 @@ abstract class AbstractController
     public function store(): Response
     {
         $data = request()->all();
-        
+
         // Send failed response if empty request
         if (empty($data)) {
             return $this->responseEmpty();
@@ -65,7 +65,7 @@ abstract class AbstractController
     public function show(int $id): Response
     {
         $model = $this->service->findOne($id);
-        if(is_null($model)){
+        if (is_null($model)) {
             return $this->responseNotFound();
         }
 
@@ -75,7 +75,7 @@ abstract class AbstractController
     public function update(int $id): Response
     {
         $data = request()->all();
-        
+
         // Send failed response if empty request
         if (empty($data)) {
             return $this->responseEmpty();
@@ -96,7 +96,8 @@ abstract class AbstractController
             return $this->respondWithObject($model, $this->resource);
         } catch (Exception $ex) {
             Database::rollback();
-            throw new Exception($ex);        }
+            throw new Exception($ex);
+        }
     }
 
     public function destroy(int $id): Response
@@ -110,12 +111,5 @@ abstract class AbstractController
             Database::rollback();
             throw new Exception($ex);
         }
-    }
-
-    protected function validateRequest(int $id = null)
-    {
-        $validator = request()->validate($this->service->getRules($id));
-
-        return $validator->fails();
     }
 }

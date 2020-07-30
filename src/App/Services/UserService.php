@@ -2,18 +2,16 @@
 
 namespace App\Services;
 
-use App\Models\User;
-use App\Repositories\UserRepository;
+use App\Repositories\Contracts\IUserRepository;
 use App\Services\Contracts\IUserService;
 use Framework\AbstractModel;
 use Framework\AbstractService;
 
 class UserService extends AbstractService implements IUserService
 {
-    public function __construct()
+    public function __construct(IUserRepository $repository)
     {
-        $this->model = new User();
-        $this->repository = new UserRepository();
+        $this->repository = $repository;
     }
 
     public function store(array $data): AbstractModel

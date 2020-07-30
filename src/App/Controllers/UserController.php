@@ -3,15 +3,14 @@
 namespace App\Controllers;
 
 use App\Resources\UserResource;
-use App\Services\UserService;
+use App\Services\Contracts\IUserService;
 use Framework\AbstractController;
 
 class UserController extends AbstractController
 {
-
-    public function __construct()
+    public function __construct(IUserService $service, UserResource $resource)
     {
-        parent::__construct(new UserService());
-        $this->resource = new UserResource();
+        $this->service = $service;
+        $this->resource = $resource;
     }
 }

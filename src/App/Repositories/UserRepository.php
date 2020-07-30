@@ -8,9 +8,9 @@ use Framework\AbstractRepository;
 
 class UserRepository extends AbstractRepository implements IUserRepository
 {
-    public function __construct()
+    public function __construct(User $model)
     {
-        $this->model = new User();  
+        $this->model = $model;  
     }
 
     public function findByEmail(string $email): ?User

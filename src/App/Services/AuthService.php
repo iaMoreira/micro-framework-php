@@ -67,7 +67,7 @@ class AuthService implements IAuthService
 
     private static function emailExists(string $email): ?User
     {
-        $repository = new UserRepository();
+        $repository = new UserRepository(new User);
         return $repository->findByEmail($email);
     }
 }

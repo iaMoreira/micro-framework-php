@@ -2,6 +2,7 @@
 
 namespace App\Resources;
 
+use App\Models\Drink;
 use App\Models\User;
 use App\Repositories\DrinkRepository;
 use Framework\BaseResource;
@@ -18,7 +19,7 @@ class UserResource extends BaseResource
     public function __construct(User $model = null)
     {
         parent::__construct($model);
-        $this->drinkRepository = new DrinkRepository();
+        $this->drinkRepository = new DrinkRepository(new Drink);
         return $this;
     }
 
