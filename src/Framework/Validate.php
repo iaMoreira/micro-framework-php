@@ -17,7 +17,7 @@ class Validate
 		$values = request()->all();
 
 		foreach ($data as $field => $validation) {
-			$value = isset($values[$field]) ? $values[$field] : null; 
+			$value = isset($values[$field]) ? $values[$field] : null;
 			$this->value($value, $validation, $field);
 		}
 		return $this->details;
@@ -61,7 +61,7 @@ class Validate
 				break;
 			case 'unique':
 				$result = $this->validateUniqueField($param, $value);
-			break;
+				break;
 			default:
 				throw new \Exception("Tipo de validação não implementado");
 		}
@@ -77,14 +77,14 @@ class Validate
 		$options = explode(",", $params);
 		$query = new QueryBuilder($options[0]);
 
-		if(count($options) > 2){
+		if (count($options) > 2) {
 			$conditionals = "$options[1] = '$value' AND $options[2] != $options[3]";
-		}else {
+		} else {
 			$conditionals = "$options[1] = '$value'";
 		}
-		
+
 		$elements = $query->where($conditionals)->get();
-		if(count($elements) > 0){
+		if (count($elements) > 0) {
 			return  false;
 		}
 		return true;

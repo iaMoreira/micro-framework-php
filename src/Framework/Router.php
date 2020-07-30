@@ -44,15 +44,13 @@ class Router
 
     public function add($method, $pattern, $callback, $name = null)
     {
-
         RouteCollection::add($method, $pattern, $callback, $name);
     }
 
     public function name($route, $data = [])
     {
-
         $result = RouteCollection::name($route, $data);
-        return $result ? request()->url().$result : false;
+        return $result ? request()->url() . $result : false;
     }
 
     public function find($method, $request)
@@ -90,7 +88,7 @@ class Router
                 $call = explode("@", $this->route->callback);
 
                 if (count($call) == 2) {
-                    $controller = "App\\Controllers\\".$call[0];
+                    $controller = "App\\Controllers\\" . $call[0];
                     $controller = new $controller;
                     $method     = $call[1];
                     return call_user_func_array(array($controller, $method), array_values($this->route->params));

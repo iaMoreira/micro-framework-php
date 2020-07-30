@@ -4,12 +4,19 @@ namespace App\Controllers;
 
 use App\Services\AuthService;
 use Exception;
+use Framework\Response;
 use Framework\ResponseTrait;
 
 class LoginController
 {
     use ResponseTrait;
-
+    
+    
+    /**
+     * Instance that 
+     *
+     * @var AuthService $service
+     */
     private $service;
 
     public function __construct()
@@ -17,7 +24,7 @@ class LoginController
         $this->service = new AuthService;
     }
 
-    public function login()
+    public function login(): Response
     {
         $validatorResponse = $this->validateRequest();
 
@@ -35,7 +42,7 @@ class LoginController
         }
     }
 
-    protected function validateRequest()
+    protected function validateRequest(): ?array
     {
         $validator = request()->validate([
             'email' => 'required|min:3|max:100',

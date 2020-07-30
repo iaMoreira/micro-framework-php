@@ -314,14 +314,12 @@ class Response
     public function json($data, int $options = 0)
     {
         $this->setContentType('json');
-        if (is_object($data) && method_exists($data, 'toArray')){
+        if (is_object($data) && method_exists($data, 'toArray')) {
             $data = $data->toArray();
-        }
-        else if (!is_array($data)) {
+        } else if (!is_array($data)) {
             $data = (array) $data;
         }
         $this->setContent(json_encode($data, $options));
         return $this->send();
     }
-
 }

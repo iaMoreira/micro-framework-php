@@ -11,7 +11,7 @@ class QueryBuilder
 
     public function __construct($table = '')
     {
-        $this->select = "select *";
+        $this->select = "SELECT *";
         $this->table  = $table;
     }
 
@@ -20,12 +20,12 @@ class QueryBuilder
         return $this->table;
     }
 
-    public function toSql()
+    public function toSql(): string
     {
         return $this->built;
     }
 
-    public function update($data)
+    public function update($data): int
     {
 
         if (!is_array($data)) {
@@ -49,7 +49,7 @@ class QueryBuilder
         return self::$connection->exec($sql);
     }
 
-    public function count($arguments)
+    public function count($arguments): int
     {
         if (func_num_args() == 1 && is_string($arguments)) {
             $this->select = "SELECT count({$arguments}) ";
@@ -71,7 +71,7 @@ class QueryBuilder
         return (int) $a['t'];
     }
 
-    public function get()
+    public function get(): array
     {
         if (is_null($this->table)) {
             throw new \Exception("Parametros incorretos para query: tabela não informada");
@@ -81,14 +81,14 @@ class QueryBuilder
 
         $result = self::$connection->query($sql);
 
-        if ($this->select == 'select *') {
+        if ($this->select == 'SELECT *') {
             return $result->fetchAll(\PDO::FETCH_CLASS, get_called_class());
         } else {
             return $result->fetchAll(\PDO::FETCH_CLASS);
         }
     }
 
-    public function select($arguments)
+    public function select($arguments): QueryBuilder
     {
         if (func_num_args() == 1 && is_string($arguments)) {
             $this->select = "SELECT {$arguments} ";
@@ -107,7 +107,7 @@ class QueryBuilder
         }
     }
 
-    public function whereExists($data)
+    public function whereExists($data): QueryBuilder
     {
 
         if (strlen($this->built) > 1 && substr($this->built, -1, 1) !== '(') {
@@ -123,7 +123,7 @@ class QueryBuilder
         return $this;
     }
 
-    public function whereIsNull($field)
+    public function whereIsNull($field): QueryBuilder
     {
 
         $result      = " WHERE $field IS NULL ";
@@ -131,7 +131,7 @@ class QueryBuilder
         return $this;
     }
 
-    public function whereIsNotNull($field)
+    public function whereIsNotNull($field): QueryBuilder
     {
 
         $result      = " WHERE $field IS NOT NULL ";

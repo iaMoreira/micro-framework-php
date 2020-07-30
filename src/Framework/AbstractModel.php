@@ -59,7 +59,7 @@ abstract class AbstractModel
         }
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         return array_diff_key($this->content, array_flip($this->hidden));
     }
@@ -97,7 +97,7 @@ abstract class AbstractModel
         return $this->fillable;
     }
 
-    public static function table()
+    public static function table(): string
     {
         return (new static)->table;
     }
