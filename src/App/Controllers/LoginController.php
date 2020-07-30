@@ -2,7 +2,6 @@
 
 namespace App\Controllers;
 
-use App\Services\AuthService;
 use App\Services\Contracts\IAuthService;
 use Exception;
 use Framework\Response;
@@ -11,8 +10,8 @@ use Framework\ResponseTrait;
 class LoginController
 {
     use ResponseTrait;
-    
-    
+
+
     /**
      * Instance that 
      *

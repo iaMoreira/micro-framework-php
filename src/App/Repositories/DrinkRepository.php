@@ -8,9 +8,9 @@ use Framework\AbstractRepository;
 
 class DrinkRepository extends AbstractRepository implements IDrinkRepository
 {
-    public function __construct()
+    public function __construct(Drink $model)
     {
-        $this->model = new Drink();
+        $this->model = $model;
     }
 
     public function findAllByUserId(int $userId): array

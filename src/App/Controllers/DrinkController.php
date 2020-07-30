@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-use App\Services\DrinkService;
+use App\Services\Contracts\IDrinkService;
 use Exception;
 use Framework\Database;
 use Framework\Response;
@@ -17,13 +17,13 @@ class DrinkController
     /**
      * Instance that 
      *
-     * @var AbstractService $service
+     * @var IDrinkService $service
      */
     protected $service;
 
-    public function __construct()
+    public function __construct(IDrinkService $service)
     {
-        $this->service = new DrinkService();
+        $this->service = $service;
     }
 
     public function index(int $userId): Response

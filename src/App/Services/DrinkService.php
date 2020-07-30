@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Repositories\DrinkRepository;
+use App\Repositories\Contracts\IDrinkRepository;
 use App\Services\Contracts\IDrinkService;
 use Framework\AbstractModel;
 use Framework\AbstractService;
@@ -12,13 +12,13 @@ class DrinkService extends AbstractService implements IDrinkService
     /**
      * Instance that 
      *
-     * @var DrinkRepository $repository
+     * @var IDrinkRepository $repository
      */
     protected $repository;
 
-    public function __construct()
+    public function __construct(IDrinkRepository $repository)
     {
-        $this->repository = new DrinkRepository();
+        $this->repository = $repository;
     }
     public function rankingToday(): array
     {
