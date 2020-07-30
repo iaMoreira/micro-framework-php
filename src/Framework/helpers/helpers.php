@@ -54,3 +54,15 @@ function bcrypt(string $value): string
 {
     return password_hash($value, PASSWORD_BCRYPT);
 }
+
+function responseException(Exception $e): Response
+{
+    $statusCode = $e->getCode() ? $e->getCode() : 400;
+    $message = explode('in',$e->getMessage())[0];
+    return response()->setStatus($statusCode)->json([
+            'status'    => 'error',
+            'code'      => $statusCode,
+            'data'      => null,
+            'message'   => $message
+        ], JSON_NUMERIC_CHECK);
+}
